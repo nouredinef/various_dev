@@ -14,23 +14,14 @@ function mouseClicked() {
 
 function getGridPosition(x, y) {
     let pos = {};
-    // get x
-    for (let i = 0; i < gridSize; i++) {
-        if (caseWidth * i <= x && x < caseWidth * (i + 1)) {
-            pos.x = i;
-        }
-        if (caseWidth * i <= y && y < caseWidth * (i + 1)) {
-            pos.y = i;
-        }
-    }
+    pos.x = floor(x / caseWidth);
+    pos.y = floor(y / caseWidth);
     return pos
 }
 
 function aiPlay(player) {
-    let pos = random(available);
-    // let pos = bestMove(grid);
-    // console.log('Minimax value for AI : ' + minimax(grid, false));
-    // console.log('Next Best Move : ' + bestMove(grid).x + ', ' + bestMove(grid).y)
+    // let pos = random(available);
+    let pos = bestMove();
     grid[pos.y][pos.x] = players[player];
     currentPlayer = nextPlayer(currentPlayer);
 }
@@ -46,77 +37,40 @@ function nextPlayer(currentPlayer) {
 
 }
 
-function checkWinner(aGrid) {
+
+function equals3(a, b, c) {
+    return a == b && b == c && a != '';
+}
+
+function checkWinner() {
     let winner = null;
-    if (available.length == 0) {
-        return 'Tie'
-    }
-    //horizontal
-    for (let i = 0; i < gridSize; i++) {
-        for (let j = 0; j < gridSize; j++) {
 
-            if (aGrid[i][j] != aGrid[i][0]) {
-                winner = null;
-                break;
-            } else if (j == gridSize - 1 && aGrid[i][0] != '') {
-                winner = aGrid[i][0];
-                strokeWeight(10);
-                line(0, caseHeight / 2 + caseHeight * i,
-                    width, caseHeight / 2 + caseHeight * i);
-                return winner;
-            }
-
+    // horizontal
+    for (let i = 0; i < 3; i++) {
+        if (equals3(grid[i][0], grid[i][1], grid[i][2])) {
+            winner = grid[i][0];
         }
     }
 
-
-    //vertical
-    for (let j = 0; j < gridSize; j++) {
-        for (let i = 0; i < gridSize; i++) {
-
-            if (aGrid[i][j] != aGrid[0][j]) {
-                winner = null;
-                break;
-            } else if (i == gridSize - 1 && aGrid[0][j] != "") {
-                winner = aGrid[0][j];
-                strokeWeight(10);
-                line(caseWidth / 2 + caseHeight * j, 0,
-                    caseWidth / 2 + caseWidth * j, height);
-                return winner;
-            }
-
+    // Vertical
+    for (let i = 0; i < 3; i++) {
+        if (equals3(grid[0][i], grid[1][i], grid[2][i])) {
+            winner = grid[0][i];
         }
     }
 
-
-    //diagonal 1
-    for (let i = 0; i < gridSize; i++) {
-
-        if (aGrid[i][i] != aGrid[0][0]) {
-            winner = null;
-            break;
-        } else if (i == gridSize - 1 && aGrid[0][0] != '') {
-            winner = aGrid[0][0];
-            strokeWeight(10);
-            line(0, 0, width, height);
-            return winner;
-        }
-
+    // Diagonal
+    if (equals3(grid[0][0], grid[1][1], grid[2][2])) {
+        winner = grid[0][0];
+    }
+    if (equals3(grid[2][0], grid[1][1], grid[0][2])) {
+        winner = grid[2][0];
     }
 
-    //diagonal 2
-    for (let i = 0; i < gridSize; i++) {
-
-        if (aGrid[i][gridSize - i - 1] != aGrid[0][gridSize - 1]) {
-            winner = null;
-            break;
-        } else if (i == gridSize - 1 && aGrid[0][gridSize - 1] != '') {
-            winner = aGrid[0][gridSize - 1];
-            strokeWeight(10);
-            line(width, 0, 0, height)
-            return winner;
-        }
-
+    if (winner == null && available.length == 0) {
+        return 'tie';
+    } else {
+        return winner;
     }
 
     return null;

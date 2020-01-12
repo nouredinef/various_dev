@@ -1,65 +1,89 @@
 
-scores = {
-    'X': 1,
-    'O': -1,
-    'Tie': 0
+let scores = {
+    X: 1,
+    O: -1,
+    tie: 0
+}
+
+function minimax2(positionList, depth, isMax) {
+    if (positionList.length == 0) {
+        return scores[checkWinner(grid)];
+    }
+
+    if (isMax) {
+        maxEval = -Infinity;
+        for (let i = 0; i < positionList.length; i++) {
+            const pos = positionList[i];
+
+        }
+    } else {
+
+    }
 }
 
 
-function minimax(aGrid, isMaxPlayer) {
-    winner = checkWinner(aGrid);
-    if (winner != null) {
-        console.log('The winner is ' + winner);
+
+
+
+
+
+function minimax(grid, isMaxPlayer) {
+
+    let winner = checkWinner();
+    if (winner !== null) {
         return scores[winner];
     }
 
     if (isMaxPlayer) {
-        maxEval = -Infinity;
+        let maxEval = -Infinity;
         for (let j = 0; j < gridSize; j++) {
             for (let i = 0; i < gridSize; i++) {
-                if (aGrid[i][j] == '') {
-                    aGrid[i][j] = 'X';
-                    maxEval = max([maxEval, minimax(aGrid, false)]);
-                    aGrid[i][j] = '';
+                if (grid[i][j] == '') {
+                    grid[i][j] = 'X';
+                    let eval = minimax(grid, false);
+                    grid[i][j] = '';
+                    maxEval = max(eval, maxEval);
                     // console.log('MaxEval value : ' + maxEval);
                 }
             }
         }
         return maxEval;
     } else {
-        minEval = Infinity;
-        for (let j = 0; j < gridSize; j++) {
-            for (let i = 0; i < gridSize; i++) {
-                if (aGrid[i][j] == '') {
-                    aGrid[i][j] = 'O';
-                    minEval = min([minEval, minimax(aGrid, true)]);
-                    aGrid[i][j] = '';
+        let minEval = Infinity;
+        for (let i = 0; i < gridSize; i++) {
+            for (let j = 0; j < gridSize; j++) {
+                if (grid[i][j] == '') {
+                    grid[i][j] = 'O';
+                    let eval = minimax(grid, true);
+                    grid[i][j] = '';
+                    minEval = min(eval, minEval);
                     // console.log('MaxEval value : ' + minEval);
                 }
-
             }
         }
         return minEval;
     }
 }
 
-function bestMove(aGrid) {
-    let move = {};
+function bestMove() {
+    let move = {
+        x: -1,
+        y: -1
+    };
     let bestScore = -Infinity;
-    for (let j = 0; j < gridSize; j++) {
-        for (let i = 0; i < gridSize; i++) {
-            if (aGrid[i][j] == '') {
-                aGrid[i][j] = 'X';
-                score = minimax(aGrid, true)
+    for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+            if (grid[i][j] == '') {
+                grid[i][j] = 'X';
+                let score = minimax(grid, false);
+                grid[i][j] = '';
                 if (score > bestScore) {
                     bestScore = score;
                     move.y = i;
                     move.x = j;
-                }                
+                }
             }
         }
     }
-
     return move;
-    
 }

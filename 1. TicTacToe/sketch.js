@@ -9,7 +9,7 @@ function setup() {
     strokeWeight(3);
     
     players = ['X', 'O'];
-    currentPlayer = 1;
+    currentPlayer = 0;
     console.log('Number of players : ', players.length);
     
     par = createP('');
@@ -50,7 +50,7 @@ function setup() {
     }
   
     winner = null;
-    winner = checkWinner(grid);
+    winner = checkWinner();
     if (available.length === 0 || winner) {
       par.html("End of game");
       createP('The winner is : ' + winner);
