@@ -34,7 +34,6 @@ function nextPlayer(currentPlayer) {
     } else {
         return 0;
     }
-
 }
 
 
@@ -42,7 +41,7 @@ function equals3(a, b, c) {
     return a == b && b == c && a != '';
 }
 
-function checkWinner() {
+function checkWinner2() {
     let winner = null;
 
     // horizontal
