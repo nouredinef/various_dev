@@ -21,7 +21,7 @@ function getGridPosition(x, y) {
 
 function aiPlay(player) {
     // let pos = random(available);
-    let pos = bestMove();
+    let pos = bestMove(player);
     grid[pos.y][pos.x] = players[player];
     currentPlayer = nextPlayer(currentPlayer);
 }
@@ -41,7 +41,8 @@ function equals3(a, b, c) {
     return a == b && b == c && a != '';
 }
 
-function checkWinner2() {
+// Should also update available positions to work with minimax algorithm ?
+function checkWinner() {
     let winner = null;
 
     // horizontal
@@ -66,13 +67,20 @@ function checkWinner2() {
         winner = grid[2][0];
     }
 
-    if (winner == null && available.length == 0) {
+    let openSpots = 0;
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            if (grid[i][j] == '') {
+                openSpots++;
+            }
+        }
+    }
+
+    if (winner == null && openSpots == 0) {
         return 'tie';
     } else {
         return winner;
     }
-
-    return null;
 
 
 }
