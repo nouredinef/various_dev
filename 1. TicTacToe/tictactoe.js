@@ -14,15 +14,8 @@ function mouseClicked() {
 
 function getGridPosition(x, y) {
     let pos = {};
-    // get x
-    for (let i = 0; i < gridSize; i++) {
-        if (caseWidth * i <= x && x < caseWidth * (i + 1)) {
-            pos.x = i;
-        }
-        if (caseWidth * i <= y && y < caseWidth * (i + 1)) {
-            pos.y = i;
-        }
-    }
+    pos.x = floor(x / caseWidth);
+    pos.y = floor(y / caseWidth);
     return pos
 }
 
@@ -47,18 +40,31 @@ function nextPlayer(currentPlayer) {
 }
 
 function checkWinner(aGrid) {
+
     let winner = null;
-    if (available.length == 0) {
-        return 'Tie'
-    }
-    //horizontal
+    available = [];
+
+
+    let winnerV = new Array(gridSize).fill(true);
+    let winnerD1 = true;
+    let winnerD2 = true;
+    // winnerV.fill(true);
     for (let i = 0; i < gridSize; i++) {
+
+        let winnerH = true;
         for (let j = 0; j < gridSize; j++) {
 
-            if (aGrid[i][j] != aGrid[i][0]) {
-                winner = null;
-                break;
-            } else if (j == gridSize - 1 && aGrid[i][0] != '') {
+            // Available positions
+            if (aGrid[i][j] == '') {
+                available.push({ y: i, x: j });
+            }
+
+            // Horizontal
+            if (aGrid[i][j] != aGrid[i][0] || aGrid[i][j] == '') {
+                winnerH = false;
+            }
+            // end of line, check if horizontal winner
+            if (j == gridSize - 1 && winnerH) {
                 winner = aGrid[i][0];
                 strokeWeight(10);
                 line(0, caseHeight / 2 + caseHeight * i,
@@ -66,57 +72,49 @@ function checkWinner(aGrid) {
                 return winner;
             }
 
-        }
-    }
-
-
-    //vertical
-    for (let j = 0; j < gridSize; j++) {
-        for (let i = 0; i < gridSize; i++) {
-
-            if (aGrid[i][j] != aGrid[0][j]) {
-                winner = null;
-                break;
-            } else if (i == gridSize - 1 && aGrid[0][j] != "") {
+            // Vertical
+            if (aGrid[i][j] != aGrid[0][j] || aGrid[i][j] == '') {
+                winnerV[j] = false;
+            }
+            // End of column, check if vertical winner
+            if (i == gridSize - 1 && winnerV[j]) {
                 winner = aGrid[0][j];
                 strokeWeight(10);
                 line(caseWidth / 2 + caseHeight * j, 0,
                     caseWidth / 2 + caseWidth * j, height);
                 return winner;
+
             }
 
+
+            // These should be outside this loop (multi verificaions...)
+            // Diagonal 1
+            if (aGrid[j][j] != aGrid[0][0] || aGrid[j][j] == '') {
+                winnerD1 = false;
+            }
+            // Check if Diagonal winner
+            if (j == gridSize - 1 && winnerD1) {
+                winner = aGrid[0][0];
+                strokeWeight(10);
+                line(0, 0, width, height);
+                return winner;
+            }
+
+            //Diagonal 2
+            if (aGrid[j][gridSize - j - 1] != aGrid[0][gridSize - 1] || aGrid[j][gridSize - j - 1] == '') {
+                winnerD2 = false;
+            }
+            if (j == gridSize - 1 && winnerD2) {
+                winner = aGrid[0][gridSize - 1];
+                strokeWeight(10);
+                line(width, 0, 0, height)
+                return winner;
+            }
         }
     }
 
-
-    //diagonal 1
-    for (let i = 0; i < gridSize; i++) {
-
-        if (aGrid[i][i] != aGrid[0][0]) {
-            winner = null;
-            break;
-        } else if (i == gridSize - 1 && aGrid[0][0] != '') {
-            winner = aGrid[0][0];
-            strokeWeight(10);
-            line(0, 0, width, height);
-            return winner;
-        }
-
-    }
-
-    //diagonal 2
-    for (let i = 0; i < gridSize; i++) {
-
-        if (aGrid[i][gridSize - i - 1] != aGrid[0][gridSize - 1]) {
-            winner = null;
-            break;
-        } else if (i == gridSize - 1 && aGrid[0][gridSize - 1] != '') {
-            winner = aGrid[0][gridSize - 1];
-            strokeWeight(10);
-            line(width, 0, 0, height)
-            return winner;
-        }
-
+    if (available.length == 0) {
+        return 'Tie'
     }
 
     return null;
