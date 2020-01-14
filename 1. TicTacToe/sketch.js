@@ -9,11 +9,11 @@ function setup() {
   strokeWeight(3);
 
   players = ['X', 'O'];
-  currentPlayer = 1;
+  currentPlayer = 0;
   console.log('Number of players : ', players.length);
 
   par = createP('');
-  humanPlayers = [0];
+  humanPlayers = [1];
 
   // frameRate(1);
 }
