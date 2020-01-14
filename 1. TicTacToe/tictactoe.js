@@ -1,5 +1,4 @@
-
-// 
+// Human player
 function mouseClicked() {
     if (humanPlayers.includes(currentPlayer)) {
         let pos = getGridPosition(mouseX, mouseY);
@@ -11,19 +10,20 @@ function mouseClicked() {
 
 }
 
+// AI player
+function aiPlay(player) {
+    
+    let pos = bestMove(player);
+    grid[pos.y][pos.x] = players[player];
+    currentPlayer = nextPlayer(currentPlayer);
+}
+
 
 function getGridPosition(x, y) {
     let pos = {};
     pos.x = floor(x / caseWidth);
     pos.y = floor(y / caseWidth);
     return pos
-}
-
-function aiPlay(player) {
-    // let pos = random(available);
-    let pos = bestMove(player);
-    grid[pos.y][pos.x] = players[player];
-    currentPlayer = nextPlayer(currentPlayer);
 }
 
 

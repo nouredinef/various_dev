@@ -5,7 +5,7 @@ let scores = {
     tie: 0
 }
 
-function minimax(positionList, depth, isMax) {
+function minimax2(positionList, depth, isMax) {
 
     if (positionList.length == 0) {
         return scores[checkWinner()];
@@ -36,7 +36,7 @@ function minimax(positionList, depth, isMax) {
     }
 }
 
-function bestMove(player) {
+function bestMove2(player) {
     let move;
     let emptyPositions = available;
     // is maximizing player ?
@@ -75,7 +75,7 @@ function bestMove(player) {
 
 
 
-function minimax2(grid, isMaxPlayer) {
+function minimax(grid, isMaxPlayer) {
 
     let winner = checkWinner();
     if (winner !== null) {
@@ -113,7 +113,7 @@ function minimax2(grid, isMaxPlayer) {
     }
 }
 
-function bestMove2() {
+function bestMove() {
     let move;
     let bestScore = -Infinity;
     for (let i = 0; i < gridSize; i++) {
