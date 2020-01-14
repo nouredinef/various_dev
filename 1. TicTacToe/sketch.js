@@ -54,10 +54,9 @@ function draw() {
     createP('The winner is : ' + winner);
     noLoop();
   } else {
-    // if (currentPlayer === humanPlayer) {
-    //  humanPlay(currentPlayer); 
-    // } 
-    let useless = (humanPlayers.includes(currentPlayer)) ? null : aiPlay(currentPlayer);
+    if (!humanPlayers.includes(currentPlayer)) {
+      aiPlay(currentPlayer);
+    }
   }
 
 }

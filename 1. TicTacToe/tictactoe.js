@@ -21,9 +21,7 @@ function getGridPosition(x, y) {
 
 function aiPlay(player) {
     let pos = random(available);
-    // let pos = bestMove(grid);
-    // console.log('Minimax value for AI : ' + minimax(grid, false));
-    // console.log('Next Best Move : ' + bestMove(grid).x + ', ' + bestMove(grid).y)
+    
     grid[pos.y][pos.x] = players[player];
     currentPlayer = nextPlayer(currentPlayer);
 }
@@ -48,9 +46,9 @@ function checkWinner(aGrid) {
     let winnerV = new Array(gridSize).fill(true);
     let winnerD1 = true;
     let winnerD2 = true;
-    // winnerV.fill(true);
+    
     for (let i = 0; i < gridSize; i++) {
-
+        
         let winnerH = true;
         for (let j = 0; j < gridSize; j++) {
 
