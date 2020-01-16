@@ -5,50 +5,48 @@ let scores = {
     tie: 0
 }
 
-function minimax2(positionList, depth, isMax) {
+function minimax(aGrid, depth, isMax) {
+    let winner = checkWinner(aGrid,false);
+    let positionList = available;
 
-    if (positionList.length == 0) {
-        return scores[checkWinner()];
+    if (winner) {
+        return scores[winner];
     }
 
     if (isMax) {
         let maxEval = -Infinity;
         for (let i = 0; i < positionList.length; i++) {
-            let pos = positionList.shift();
-            grid[pos.y][pos.x] = 'X';
-            let val = minimax(positionList.slice(1), depth + 1, false);
-            grid[pos.y][pos.x] = '';
-            positionList.push(pos);
+            let pos = positionList[i];
+            aGrid[pos.y][pos.x] = 'X';
+            let val = minimax(aGrid, depth + 1, false);
+            aGrid[pos.y][pos.x] = '';
             maxEval = max(val, maxEval);
         }
         return maxEval;
     } else {
         let minEval = Infinity;
         for (let i = 0; i < positionList.length; i++) {
-            let pos = positionList.shift();
-            grid[pos.y][pos.x] = 'O';
-            let val = minimax(positionList.slice(1), depth + 1, true);
-            grid[pos.y][pos.x] = '';
-            positionList.push(pos);
+            let pos = positionList[i];
+            aGrid[pos.y][pos.x] = 'O';
+            let val = minimax(aGrid, depth + 1, true);
+            aGrid[pos.y][pos.x] = '';
             minEval = min(val, minEval);
         }
         return minEval;
     }
 }
 
-function bestMove2(player) {
+function bestMove(player) {
     let move;
     let emptyPositions = available;
-    // is maximizing player ?
+
     if (scores[players[player]] > 0) {
         let bestScore = -Infinity;
         for (let i = 0; i < emptyPositions.length; i++) {
-            let pos = emptyPositions.shift();
-            console.log(pos);
+            let pos = emptyPositions[i];
             grid[pos.y][pos.x] = players[player];
-            let score = minimax(emptyPositions, 0, false);
+            let score = minimax(grid, 0, false);
             grid[pos.y][pos.x] = '';
-            console.log(score);
 
             if (score > bestScore) {
                 bestScore = score;
@@ -57,11 +55,11 @@ function bestMove2(player) {
         }
     } else {
         let bestScore = Infinity;
-        for (let i = 0; i < available.length; i++) {
+        for (let i = 0; i < emptyPositions.length; i++) {
 
-            let pos = available[i];
+            let pos = emptyPositions[i];
             grid[pos.y][pos.x] = players[player];
-            let score = minimax(available, 0, true);
+            let score = minimax(grid, 0, true);
             grid[pos.y][pos.x] = '';
 
             if (score < bestScore) {
@@ -75,9 +73,9 @@ function bestMove2(player) {
 
 
 
-function minimax(grid, isMaxPlayer) {
+function minimax2(grid, isMaxPlayer) {
 
-    let winner = checkWinner();
+    let winner = checkWinner(grid);
     if (winner !== null) {
         return scores[winner];
     }
@@ -91,7 +89,6 @@ function minimax(grid, isMaxPlayer) {
                     let val = minimax(grid, false);
                     grid[i][j] = '';
                     maxEval = max(val, maxEval);
-                    // console.log('MaxEval value : ' + maxEval);
                 }
             }
         }
@@ -105,7 +102,6 @@ function minimax(grid, isMaxPlayer) {
                     let val2 = minimax(grid, true);
                     grid[i][j] = '';
                     minEval = min(val2, minEval);
-                    // console.log('MaxEval value : ' + minEval);
                 }
             }
         }
@@ -113,23 +109,41 @@ function minimax(grid, isMaxPlayer) {
     }
 }
 
-function bestMove() {
+function bestMove2() {
     let move;
-    let bestScore = -Infinity;
-    for (let i = 0; i < gridSize; i++) {
-        for (let j = 0; j < gridSize; j++) {
-            if (grid[i][j] == '') {
-                grid[i][j] = 'X';
-                let score = minimax(grid, false);
-                grid[i][j] = '';
-                if (score > bestScore) {
-                    bestScore = score;
-                    // move.y = i;
-                    // move.x = j;
-                    move = {x: j, y: i}
+    // Is maximizing player ?
+    if (scores[players[currentPlayer]] > 0) {
+        let bestScore = -Infinity;
+        for (let i = 0; i < gridSize; i++) {
+            for (let j = 0; j < gridSize; j++) {
+                if (grid[i][j] == '') {
+                    grid[i][j] = 'X';
+                    let score = minimax(grid, false);
+                    grid[i][j] = '';
+                    if (score > bestScore) {
+                        bestScore = score;
+                        move = {x: j, y: i}
+                    }
                 }
             }
         }
+
+    } else {
+        let bestScore = Infinity;
+        for (let i = 0; i < gridSize; i++) {
+            for (let j = 0; j < gridSize; j++) {
+                if (grid[i][j] == '') {
+                    grid[i][j] = 'O';
+                    let score = minimax(grid, true);
+                    grid[i][j] = '';
+                    if (score < bestScore) {
+                        bestScore = score;
+                        move = {x: j, y: i}
+                    }
+                }
+            }
+        }
+
     }
     return move;
 }

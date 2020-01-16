@@ -12,7 +12,7 @@ function mouseClicked() {
 
 // AI player
 function aiPlay(player) {
-    
+
     let pos = bestMove(player);
     grid[pos.y][pos.x] = players[player];
     currentPlayer = nextPlayer(currentPlayer);
@@ -37,53 +37,96 @@ function nextPlayer(currentPlayer) {
 }
 
 
-function equals3(a, b, c) {
-    return a == b && b == c && a != '';
-}
 
-// Should also update available positions to work with minimax algorithm ?
-function checkWinner() {
+function checkWinner(aGrid, showLine) {
+
     let winner = null;
+    available = [];
 
-    // horizontal
-    for (let i = 0; i < 3; i++) {
-        if (equals3(grid[i][0], grid[i][1], grid[i][2])) {
-            winner = grid[i][0];
-        }
-    }
 
-    // Vertical
-    for (let i = 0; i < 3; i++) {
-        if (equals3(grid[0][i], grid[1][i], grid[2][i])) {
-            winner = grid[0][i];
-        }
-    }
+    let winnerV = new Array(gridSize).fill(true);
+    let winnerD1 = true;
+    let winnerD2 = true;
 
-    // Diagonal
-    if (equals3(grid[0][0], grid[1][1], grid[2][2])) {
-        winner = grid[0][0];
-    }
-    if (equals3(grid[2][0], grid[1][1], grid[0][2])) {
-        winner = grid[2][0];
-    }
+    for (let i = 0; i < gridSize; i++) {
 
-    let openSpots = 0;
-    for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++) {
-            if (grid[i][j] == '') {
-                openSpots++;
+        let winnerH = true;
+        for (let j = 0; j < gridSize; j++) {
+
+            // Available positions
+            if (aGrid[i][j] == '') {
+                available.push({ y: i, x: j });
+            }
+
+            // Horizontal
+            if (aGrid[i][j] != aGrid[i][0] || aGrid[i][j] == '') {
+                winnerH = false;
+            }
+            // end of line, check if horizontal winner
+            if (j == gridSize - 1 && winnerH) {
+                winner = aGrid[i][0];
+                if (showLine) {
+                    strokeWeight(10);
+                    line(0, caseHeight / 2 + caseHeight * i,
+                        width, caseHeight / 2 + caseHeight * i);
+                }
+                return winner;
+            }
+
+            // Vertical
+            if (aGrid[i][j] != aGrid[0][j] || aGrid[i][j] == '') {
+                winnerV[j] = false;
+            }
+            // End of column, check if vertical winner
+            if (i == gridSize - 1 && winnerV[j]) {
+                winner = aGrid[0][j];
+                if (showLine) {
+                    strokeWeight(10);
+                    line(caseWidth / 2 + caseHeight * j, 0,
+                        caseWidth / 2 + caseWidth * j, height);
+                }
+                return winner;
+
+            }
+
+
+            // These should be outside this loop (multi verificaions...)
+            // Diagonal 1
+            if (aGrid[j][j] != aGrid[0][0] || aGrid[j][j] == '') {
+                winnerD1 = false;
+            }
+            // Check if Diagonal winner
+            if (j == gridSize - 1 && winnerD1) {
+                winner = aGrid[0][0];
+                if (showLine) {
+                    strokeWeight(10);
+                    line(0, 0, width, height);
+                }
+                return winner;
+            }
+
+            //Diagonal 2
+            if (aGrid[j][gridSize - j - 1] != aGrid[0][gridSize - 1] || aGrid[j][gridSize - j - 1] == '') {
+                winnerD2 = false;
+            }
+            if (j == gridSize - 1 && winnerD2) {
+                winner = aGrid[0][gridSize - 1];
+                if (showLine) {
+                    strokeWeight(10);
+                    line(width, 0, 0, height)
+                }
+                return winner;
             }
         }
     }
 
-    if (winner == null && openSpots == 0) {
-        return 'tie';
-    } else {
-        return winner;
+    if (available.length == 0) {
+        return 'tie'
     }
 
-
+    return null;
 }
+
 
 function drawX(pos) {
     line(caseWidth / 4 + caseWidth * pos.x, caseHeight / 4 + caseHeight * pos.y,
